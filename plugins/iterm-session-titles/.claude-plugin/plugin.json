@@ -1,0 +1,6 @@
+{
+  "name": "iterm-session-titles",
+  "version": "1.0.0",
+  "description": "Auto-title Claude Code sessions (with ticket keys) and mirror the title to the iTerm2 tab.",
+  "author": { "name": "Josh Illian" }
+}

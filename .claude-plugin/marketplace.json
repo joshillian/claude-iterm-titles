@@ -1,0 +1,11 @@
+{
+  "name": "joshillian-claude",
+  "owner": { "name": "Josh Illian" },
+  "plugins": [
+    {
+      "name": "iterm-session-titles",
+      "source": "./plugins/iterm-session-titles",
+      "description": "Auto-title Claude Code sessions (with ticket keys) and mirror the title to the iTerm2 tab."
+    }
+  ]
+}
