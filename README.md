@@ -22,6 +22,14 @@ Off by default. To enable, list your project keys in `~/.claude/settings.json`:
 { "env": { "CLAUDE_TITLE_TICKET_PROJECTS": "WEB|OPS" } }
 ```
 
+## Smart titles for generic sessions
+
+Claude Code's title is generated from the first prompt only, so a session opened with a bare link ends up as "Slack thread" or "Code review request". When the title looks generic and `ANTHROPIC_API_KEY` is set, the hook asks Haiku for a better one from the first few prompts and Claude's replies. This happens at the 2nd and 6th prompt, and the result is cached per session.
+
+- Off switch: `CLAUDE_TITLE_SMART=0`
+- Model override: `CLAUDE_TITLE_MODEL` (default `claude-haiku-5-5`)
+- Cost: about 1K input tokens, at most twice per generic session
+
 ## Caveat
 
 Reads undocumented Claude Code internals (`~/.claude/sessions/*.json`, `ai-title` transcript entries). A Claude Code update may break it.
