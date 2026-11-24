@@ -71,7 +71,36 @@ while [ -n "$PID" ] && [ "$PID" -gt 1 ]; do
   PID=$(ps -o ppid= -p "$PID" 2>/dev/null | tr -d ' ')
 done
 
-# Set iTerm2 tab title via OSC escape sequence (write to tty, not stdout)
-[ -n "$TTY_DEV" ] && printf '\033]1;%s\007' "$SESSION_NAME" > "$TTY_DEV" 2>/dev/null
+[ -n "$TTY_DEV" ] || exit 0
+
+# Set iTerm2 tab title via OSC escape sequence (write to tty, not stdout).
+# iTerm treats this as a temporary override and drops it whenever the profile is
+# re-applied (e.g. closing Settings), so it's only the fallback.
+printf '\033]1;%s\007' "$SESSION_NAME" > "$TTY_DEV" 2>/dev/null
+
+# Also set the iTerm session's own name (what "Edit Session" sets), which survives
+# profile re-application. Matched by tty; values passed as argv, never interpolated.
+# Opt out with CLAUDE_TITLE_ITERM_APPLESCRIPT=0.
+if [ "${CLAUDE_TITLE_ITERM_APPLESCRIPT:-1}" != "0" ] && [ "$(uname)" = "Darwin" ] \
+   && { [ "$TERM_PROGRAM" = "iTerm.app" ] || [ "$LC_TERMINAL" = "iTerm2" ]; }; then
+  osascript - "$TTY_DEV" "$SESSION_NAME" >/dev/null 2>&1 <<'APPLESCRIPT'
+on run argv
+  set wantTty to item 1 of argv
+  set newName to item 2 of argv
+  tell application "iTerm2"
+    repeat with w in windows
+      repeat with tb in tabs of w
+        repeat with s in sessions of tb
+          if ((tty of s) as text) is wantTty then
+            set name of s to newName
+            return
+          end if
+        end repeat
+      end repeat
+    end repeat
+  end tell
+end run
+APPLESCRIPT
+fi
 
 exit 0

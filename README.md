@@ -12,7 +12,7 @@ Claude Code plugin that:
 /plugin install iterm-session-titles@joshillian-claude
 ```
 
-Requires `jq` and `python3`. macOS + iTerm2 (the tab title uses OSC 1, so other terminals that honor it may work too).
+Requires `jq` and `python3`. macOS + iTerm2 (the tab title is set via OSC 1, plus AppleScript to set the iTerm session name so it survives profile re-application such as closing Settings; macOS asks once to allow the automation, opt out with `CLAUDE_TITLE_ITERM_APPLESCRIPT=0`).
 
 ## Ticket keys (optional)
 
